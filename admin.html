@@ -25,7 +25,7 @@ th{background:#f8f8ff}
 <div id="count" class="muted" style="margin:15px 0"></div>
 <div class="table-wrap">
 <table>
-<thead><tr><th>Student</th><th>Pickup</th><th>Destination</th><th>Requested Time</th><th>Submitted</th><th>GPS</th><th>Status</th></tr></thead>
+<thead><tr><th>Student</th><th>Pickup</th><th>Destination</th><th>Requested Time</th><th>Submitted</th><th>Pickup GPS</th><th>Destination GPS</th><th>Status</th></tr></thead>
 <tbody id="rows"></tbody>
 </table>
 </div>
@@ -39,14 +39,15 @@ async function loadRequests(){
  rows.innerHTML='';
  data.forEach(r=>{
    const tr=document.createElement('tr');
-   const gps=(r.latitude!==null && r.longitude!==null)?`${r.latitude}, ${r.longitude}`:'Not provided';
+   const pickupGps=(r.pickupLat!==null && r.pickupLng!==null)?`${r.pickupLat}, ${r.pickupLng}`:'Not provided';
+   const destinationGps=(r.destinationLat!==null && r.destinationLng!==null)?`${r.destinationLat}, ${r.destinationLng}`:'Not provided';
    tr.innerHTML=`
     <td><strong>${escapeHtml(r.studentName)}</strong><br>${escapeHtml(r.studentId)}<br>${escapeHtml(r.phone)}</td>
     <td>${escapeHtml(r.pickupLocation)}</td>
     <td>${escapeHtml(r.destination)}</td>
     <td>${escapeHtml(r.requestTime)}</td>
     <td class="small">${new Date(r.submittedAt).toLocaleString()}</td>
-    <td>${escapeHtml(gps)}</td>
+    <td>${escapeHtml(pickupGps)}</td><td>${escapeHtml(destinationGps)}</td>
     <td>
       <select class="status" onchange="changeStatus('${r.id}',this.value)">
        ${['Pending','Accepted','Escort Assigned','Completed','Cancelled'].map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`).join('')}

@@ -2,86 +2,97 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Campus Safety Escort</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CampusSafe — GPS Escort Request</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+ integrity="sha256-p4NxAoJBhIINfQ3q1qQ8u3Vx2lH9k1Z8V1V0Vf0Vx0="
+ crossorigin=""/>
+<style>
+#map{height:390px;border-radius:16px;margin:12px 0 18px;border:1px solid #ddd}
+.map-tools{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.map-tools button{border:1px solid #7c3aed;background:#f5f3ff;color:#6d28d9;padding:10px 13px;border-radius:9px;font-weight:700;cursor:pointer}
+.selection{background:#f8fafc;border-radius:12px;padding:14px;margin:10px 0}
+.selection strong{color:#6d28d9}
+</style>
 </head>
 <body>
 <header>
   <div class="brand">🛡️ CampusSafe</div>
-  <nav>
-    <a href="#request">Request Escort</a>
-    <a href="#safety">Safety</a>
-    <a href="admin.html">Staff Dashboard</a>
-  </nav>
+  <nav><a href="#request">Request Escort</a><a href="#safety">Safety</a><a href="admin.html">Staff Dashboard</a></nav>
 </header>
 
 <main>
-  <section class="hero">
-    <div>
-      <p class="eyebrow">CAMPUS WOMEN'S SAFETY</p>
-      <h1>Request a safe campus escort.</h1>
-      <p>Submit your current/pickup location, destination and preferred request time. Your request is sent to the campus safety team.</p>
-      <a class="btn" href="#request">Request an Escort</a>
-    </div>
-    <div class="shield">🛡️</div>
-  </section>
+<section class="hero">
+  <div>
+    <p class="eyebrow">CAMPUS WOMEN'S SAFETY</p>
+    <h1>Request a safe campus escort.</h1>
+    <p>Select your pickup and destination directly on the campus map, or use your current GPS position.</p>
+    <a class="btn" href="#request">Request an Escort</a>
+  </div>
+  <div class="shield">🛡️</div>
+</section>
 
-  <section id="request" class="card">
-    <h2>Escort Request</h2>
-    <p class="muted">Please provide accurate details so the safety team can coordinate your escort.</p>
+<section id="request" class="card">
+<h2>Escort Request</h2>
+<p class="muted">First choose a pickup location, then choose a destination on the map.</p>
 
-    <form id="escortForm">
-      <div class="grid">
-        <label>Student Name
-          <input id="studentName" required maxlength="100" placeholder="Enter your name">
-        </label>
-        <label>Student ID
-          <input id="studentId" required maxlength="50" placeholder="e.g. CSE2026A01">
-        </label>
-        <label>Phone Number
-          <input id="phone" required maxlength="30" placeholder="Campus contact number">
-        </label>
-        <label>Request / Pickup Time
-          <input id="requestTime" type="datetime-local" required>
-        </label>
-      </div>
+<form id="escortForm">
+<div class="grid">
+<label>Student Name<input id="studentName" required maxlength="100" placeholder="Enter your name"></label>
+<label>Student ID<input id="studentId" required maxlength="50" placeholder="e.g. CSE2026A01"></label>
+<label>Phone Number<input id="phone" required maxlength="30" placeholder="Campus contact number"></label>
+<label>Request / Pickup Time<input id="requestTime" type="datetime-local" required></label>
+</div>
 
-      <label>Pickup / Current Location
-        <textarea id="pickupLocation" required maxlength="250" placeholder="e.g. Library Main Entrance"></textarea>
-      </label>
+<h3>📍 Choose Locations</h3>
+<div class="map-tools">
+  <button type="button" id="pickupMode">Choose Pickup on Map</button>
+  <button type="button" id="destinationMode">Choose Destination on Map</button>
+  <button type="button" id="gpsBtn">🎯 Use My GPS for Pickup</button>
+</div>
+<p id="mapStatus" class="muted">Select a mode, then tap the map.</p>
+<div id="map"></div>
 
-      <button type="button" class="location-btn" id="locationBtn">📍 Use My Current Location</button>
-      <p id="locationStatus" class="muted"></p>
+<div class="selection">
+  <strong>Pickup:</strong> <span id="pickupDisplay">Not selected</span><br>
+  <strong>Destination:</strong> <span id="destinationDisplay">Not selected</span>
+</div>
 
-      <div class="grid">
-        <label>Destination
-          <textarea id="destination" required maxlength="250" placeholder="e.g. Women's Hostel Gate"></textarea>
-        </label>
-        <label>Additional Note (optional)
-          <textarea id="note" maxlength="250" placeholder="Any useful non-sensitive information"></textarea>
-        </label>
-      </div>
+<label>Pickup / Current Location
+<textarea id="pickupLocation" required maxlength="250" placeholder="Select on map or enter a campus location"></textarea></label>
 
-      <input type="hidden" id="latitude">
-      <input type="hidden" id="longitude">
+<label>Destination
+<textarea id="destination" required maxlength="250" placeholder="Select on map or enter a campus location"></textarea></label>
 
-      <button class="btn full" type="submit">Submit Escort Request</button>
-      <div id="message"></div>
-    </form>
-  </section>
+<label>Additional Note (optional)
+<textarea id="note" maxlength="250" placeholder="Any useful non-sensitive information"></textarea></label>
 
-  <section id="safety" class="safety">
-    <h2>Safety first</h2>
-    <div class="tips">
-      <div>📱 Keep your phone charged.</div>
-      <div>👥 Stay in a well-lit/public area while waiting.</div>
-      <div>🚨 For an immediate emergency, contact your campus security/emergency service.</div>
-    </div>
-  </section>
+<input type="hidden" id="pickupLat">
+<input type="hidden" id="pickupLng">
+<input type="hidden" id="destinationLat">
+<input type="hidden" id="destinationLng">
+
+<button class="btn full" type="submit">Submit Escort Request</button>
+<div id="message"></div>
+</form>
+</section>
+
+<section id="safety" class="safety">
+<h2>Safety first</h2>
+<div class="tips">
+<div>📱 Keep your phone charged.</div>
+<div>👥 Stay in a well-lit/public area while waiting.</div>
+<div>🚨 For an immediate emergency, contact your campus security/emergency service.</div>
+</div>
+</section>
 </main>
 
-<footer>CampusSafe • Educational prototype • Use your institution's official emergency process for emergencies.</footer>
+<footer>CampusSafe • Educational prototype • For emergencies use your institution's official emergency process.</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+ integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+ crossorigin=""></script>
 <script src="app.js"></script>
 </body>
 </html>

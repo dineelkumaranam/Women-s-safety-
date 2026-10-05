@@ -30,3 +30,14 @@ For real campus deployment, add authentication, HTTPS, role-based access control
 encrypted storage, audit logs, secure database storage, rate limiting, CSRF protection,
 input validation, monitoring, and a real-time alert/notification system.
 Do not rely on this app as a substitute for campus security or emergency services.
+
+
+## GPS and Map Features
+- Leaflet + OpenStreetMap map is included on the student request page.
+- **Use My GPS for Pickup** asks for browser location permission and places a pickup marker.
+- **Choose Pickup on Map** lets the student tap any map position.
+- **Choose Destination on Map** lets the student tap a destination.
+- The backend stores pickup latitude/longitude and destination latitude/longitude.
+- The staff dashboard displays both coordinate pairs.
+
+Browser geolocation generally requires HTTPS or localhost. OpenStreetMap tiles require internet access.
