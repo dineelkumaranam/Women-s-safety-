@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campus Safety Escort</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="brand">🛡️ CampusSafe</div>
+  <nav>
+    <a href="#request">Request Escort</a>
+    <a href="#safety">Safety</a>
+    <a href="admin.html">Staff Dashboard</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <p class="eyebrow">CAMPUS WOMEN'S SAFETY</p>
+      <h1>Request a safe campus escort.</h1>
+      <p>Submit your current/pickup location, destination and preferred request time. Your request is sent to the campus safety team.</p>
+      <a class="btn" href="#request">Request an Escort</a>
+    </div>
+    <div class="shield">🛡️</div>
+  </section>
+
+  <section id="request" class="card">
+    <h2>Escort Request</h2>
+    <p class="muted">Please provide accurate details so the safety team can coordinate your escort.</p>
+
+    <form id="escortForm">
+      <div class="grid">
+        <label>Student Name
+          <input id="studentName" required maxlength="100" placeholder="Enter your name">
+        </label>
+        <label>Student ID
+          <input id="studentId" required maxlength="50" placeholder="e.g. CSE2026A01">
+        </label>
+        <label>Phone Number
+          <input id="phone" required maxlength="30" placeholder="Campus contact number">
+        </label>
+        <label>Request / Pickup Time
+          <input id="requestTime" type="datetime-local" required>
+        </label>
+      </div>
+
+      <label>Pickup / Current Location
+        <textarea id="pickupLocation" required maxlength="250" placeholder="e.g. Library Main Entrance"></textarea>
+      </label>
+
+      <button type="button" class="location-btn" id="locationBtn">📍 Use My Current Location</button>
+      <p id="locationStatus" class="muted"></p>
+
+      <div class="grid">
+        <label>Destination
+          <textarea id="destination" required maxlength="250" placeholder="e.g. Women's Hostel Gate"></textarea>
+        </label>
+        <label>Additional Note (optional)
+          <textarea id="note" maxlength="250" placeholder="Any useful non-sensitive information"></textarea>
+        </label>
+      </div>
+
+      <input type="hidden" id="latitude">
+      <input type="hidden" id="longitude">
+
+      <button class="btn full" type="submit">Submit Escort Request</button>
+      <div id="message"></div>
+    </form>
+  </section>
+
+  <section id="safety" class="safety">
+    <h2>Safety first</h2>
+    <div class="tips">
+      <div>📱 Keep your phone charged.</div>
+      <div>👥 Stay in a well-lit/public area while waiting.</div>
+      <div>🚨 For an immediate emergency, contact your campus security/emergency service.</div>
+    </div>
+  </section>
+</main>
+
+<footer>CampusSafe • Educational prototype • Use your institution's official emergency process for emergencies.</footer>
+<script src="app.js"></script>
+</body>
+</html>

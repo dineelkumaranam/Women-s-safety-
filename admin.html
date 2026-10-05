@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CampusSafe Staff Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.dashboard{max-width:1200px;margin:30px auto;padding:0 20px}
+.table-wrap{overflow:auto;background:#fff;border-radius:18px;box-shadow:0 8px 30px #0000000a}
+table{width:100%;border-collapse:collapse;min-width:950px}
+th,td{padding:14px;text-align:left;border-bottom:1px solid #edf0f5;vertical-align:top}
+th{background:#f8f8ff}
+.status{padding:7px;border:1px solid #ddd;border-radius:8px}
+.small{font-size:12px;color:#697386}
+.refresh{background:#7c3aed;color:#fff;border:0;padding:10px 15px;border-radius:9px;cursor:pointer}
+</style>
+</head>
+<body>
+<header><div class="brand">🛡️ CampusSafe Staff</div><nav><a href="index.html">Student Request</a></nav></header>
+<main class="dashboard">
+<h1>Escort Requests</h1>
+<p class="muted">Prototype dashboard. Add proper staff authentication before real deployment.</p>
+<button class="refresh" onclick="loadRequests()">Refresh</button>
+<div id="count" class="muted" style="margin:15px 0"></div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Student</th><th>Pickup</th><th>Destination</th><th>Requested Time</th><th>Submitted</th><th>GPS</th><th>Status</th></tr></thead>
+<tbody id="rows"></tbody>
+</table>
+</div>
+</main>
+<script>
+async function loadRequests(){
+ const res=await fetch('/api/requests');
+ const data=await res.json();
+ document.getElementById('count').textContent=`${data.length} request(s)`;
+ const rows=document.getElementById('rows');
+ rows.innerHTML='';
+ data.forEach(r=>{
+   const tr=document.createElement('tr');
+   const gps=(r.latitude!==null && r.longitude!==null)?`${r.latitude}, ${r.longitude}`:'Not provided';
+   tr.innerHTML=`
+    <td><strong>${escapeHtml(r.studentName)}</strong><br>${escapeHtml(r.studentId)}<br>${escapeHtml(r.phone)}</td>
+    <td>${escapeHtml(r.pickupLocation)}</td>
+    <td>${escapeHtml(r.destination)}</td>
+    <td>${escapeHtml(r.requestTime)}</td>
+    <td class="small">${new Date(r.submittedAt).toLocaleString()}</td>
+    <td>${escapeHtml(gps)}</td>
+    <td>
+      <select class="status" onchange="changeStatus('${r.id}',this.value)">
+       ${['Pending','Accepted','Escort Assigned','Completed','Cancelled'].map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`).join('')}
+      </select>
+    </td>`;
+   rows.appendChild(tr);
+ });
+}
+function escapeHtml(v){
+ return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+async function changeStatus(id,status){
+ await fetch('/api/requests/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})});
+ loadRequests();
+}
+loadRequests();
+setInterval(loadRequests,15000);
+</script>
+</body>
+</html>
